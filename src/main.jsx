@@ -9,8 +9,9 @@ import IniciarSesion from './pages/iniciarSesion.jsx'
 import Carrito from './pages/carrito.jsx'
 import AgendarHora from './pages/agendarHora.jsx'
 import Admin from './pages/Admin/admin.jsx'
+import GestionarCitas from './pages/Admin/gestionarCitas.jsx'
 import Usuarios from './pages/Admin/usuarios.jsx'
-import Vendedor from './pages/Admin/vendedor.jsx'
+import Vendedor from './pages/Admin/Vendedor/vendedor.jsx'
 
 createRoot(document.getElementById('root')).render(
 
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/agendarHora" element={<AgendarHora />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/gestionarCitas" element={<GestionarCitas />} />
         <Route path="/usuarios" element={<Usuarios />} />
         <Route path="/vendedor" element={<Vendedor />} />
         <Route path="/test" element={<App />} />

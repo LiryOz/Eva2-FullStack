@@ -2,7 +2,7 @@
 import HeaderAdmin from '../../components/headerAdmin'
 import Footer from '../../components/footer'
 
-const Vendedor = () => {
+const GestionarCitas = () => {
   return (
     <>
       <HeaderAdmin />
@@ -14,4 +14,4 @@ const Vendedor = () => {
   )
 }
 
-export default Vendedor
+export default GestionarCitas
