@@ -5,6 +5,14 @@ import { obtenerUsuarios } from '../../services/usuarios'
 
 const usuarios = obtenerUsuarios()
 
+const editarUsuario = () => {
+  window.alert('Usuario editado')
+}
+
+const eliminarUsuario = () => {
+  window.alert('Usuario eliminado')
+}
+
 const Usuarios = () => {
   return (
     <>
@@ -48,8 +56,18 @@ const Usuarios = () => {
                         </span>
                       </td>
                       <td className="text-center">
-                        <button className="btn btn-sm btn-outline-primary me-2">Editar</button>
-                        <button className="btn btn-sm btn-outline-danger">Eliminar</button>
+                        <button
+                          className="btn btn-sm btn-outline-primary me-2"
+                          onClick={editarUsuario}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={eliminarUsuario}
+                        >
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
                   ))}

@@ -1,41 +1,48 @@
 
-import { useState } from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { guardarHoraAgendada } from '../services/horaAgendada'
 
+const mostrarPopupExito = () => {
+  window.alert('La hora se ha guardado con éxito.')
+}
+
 const AgendarHora = () => {
-  const [showSuccess, setShowSuccess] = useState(false)
+  // calcula la fecha minima permitida
   const today = new Date()
-  const minDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 10)
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset())
+  const minDate = today.toISOString().slice(0, 10)
 
   const guardarHora = (event) => {
     event.preventDefault()
 
-    const nombreDueño = document.getElementById('NombreDueño')?.value.trim()
-    const fechaCita = document.getElementById('appointmentDate')?.value
-    const motivo = document.getElementById('reason')?.value.trim()
+    // el formulario recoge los datos ingresados
+    const formulario = event.currentTarget
+    const datosFormulario = new FormData(formulario)
+    const nombreDueño = datosFormulario.get('NombreDueño')?.toString().trim()
+    const nombrePaciente = datosFormulario.get('nombrePaciente')?.toString().trim()
+    const especiePaciente = datosFormulario.get('especiePaciente')?.toString()
+    const fechaCita = datosFormulario.get('appointmentDate')?.toString()
+    const motivo = datosFormulario.get('reason')?.toString().trim()
 
-    if (!nombreDueño || !fechaCita) {
-      window.alert('Debes completar al menos el nombre y la fecha de la cita.')
+    if (!nombreDueño || !nombrePaciente || !especiePaciente || !fechaCita) {
+      window.alert('Debes completar los datos del tutor, de la mascota y la fecha de la cita.')
       return
     }
 
     try {
+      // la cita guarda los datos requeridos y el motivo opcional
       const nuevaCita = {
         nombreDueño,
+        nombrePaciente,
+        especiePaciente,
         fechaCita,
         motivo: motivo || 'Sin motivo especificado',
         creadaEn: new Date().toISOString(),
       }
-
       guardarHoraAgendada(nuevaCita)
-
-      setShowSuccess(true)
-      window.alert('La hora se ha guardado con éxito.')
-      event.currentTarget.reset()
+      mostrarPopupExito()
+      formulario.reset()
     } catch (error) {
       console.error('No se pudo guardar la cita:', error)
       window.alert('Hubo un error al guardar la hora. Intenta nuevamente.')
@@ -45,7 +52,7 @@ const AgendarHora = () => {
   return (
     <>
       <Header />
-      {/* Contenido principal de la solicitud de atención veterinaria. */}
+      {/* esta seccion presenta el formulario de solicitud */}
       <main className="container py-5">
         <div className="row justify-content-center">
           <div className="col-lg-9 col-xl-8">
@@ -55,18 +62,12 @@ const AgendarHora = () => {
               <p className="text-muted mb-0">Completa tus datos y nos pondremos en contacto para confirmar la cita.</p>
             </div>
 
-            {showSuccess && (
-              <div className="alert alert-success" role="alert">
-                La hora se ha guardado con éxito.
-              </div>
-            )}
-
-            {/* La tarjeta agrupa todos los campos necesarios para agendar una hora. */}
+            {/* la tarjeta organiza los campos de la cita */}
             <div className="card border-0 shadow-sm">
               <div className="card-body p-4 p-md-5">
-                {/* Este formulario recopila los datos del tutor, la mascota y la consulta. */}
+                {/* el formulario recopila los datos del tutor y su mascota */}
                 <form id="appointmentForm" onSubmit={guardarHora}>
-                  {/* Datos de contacto de la persona responsable de la mascota. */}
+                  {/* el tutor ingresa su nombre */}
                   <fieldset className="mb-4">
                     <legend className="h4 mb-3">Datos del tutor</legend>
                     <div className="row g-3">
@@ -76,7 +77,37 @@ const AgendarHora = () => {
                       </div>
                     </div>
                   </fieldset>
-                  {/* Servicio, fecha, hora y motivo de la visita veterinaria. */}
+                  <fieldset className="mb-4">
+                    <legend className="h4 mb-3">Datos del paciente</legend>
+                    <div className="row g-3">
+                      <div className="col-md-6">
+                        <label htmlFor="nombrePaciente" className="form-label">Nombre del paciente</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="nombrePaciente"
+                          name="nombrePaciente"
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label htmlFor="especiePaciente" className="form-label">Especie del paciente</label>
+                        <select
+                          className="form-select"
+                          id="especiePaciente"
+                          name="especiePaciente"
+                          defaultValue=""
+                          required
+                        >
+                          <option value="" disabled>Selecciona una especie</option>
+                          <option value="Perro">Perro</option>
+                          <option value="Gato">Gato</option>
+                          <option value="Otro">Otro</option>
+                        </select>
+                      </div>
+                    </div>
+                  </fieldset>
+                  {/* el tutor indica la fecha y el motivo de la visita */}
                   <fieldset className="mb-4">
                     <legend className="h4 mb-3">Detalles de la consulta</legend>
                     <div className="row g-3">
@@ -101,6 +132,7 @@ const AgendarHora = () => {
                 </form>
               </div>
             </div>
+
           </div>
         </div>
       </main>

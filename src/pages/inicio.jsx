@@ -4,10 +4,12 @@ import Footer from '../components/footer'
 import Video from '../components/video'
 import '../index.css'
 import { obtenerProductos } from '../services/productos'
+import { agregarProductoAlCarrito } from '../services/carrito'
 
 const productosDestacados = obtenerProductos().slice(0, 3)
 
 function agregarAlCarrito(producto) {
+  agregarProductoAlCarrito(producto)
   window.alert(`${producto.nombre} se ha agregado al carrito.`)
 }
 

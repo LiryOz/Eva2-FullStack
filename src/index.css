@@ -205,14 +205,39 @@ main {
 .site-brand {
     font-size: 1.15rem;
     font-weight: 700;
+    display: inline-flex;
+    align-items: center;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
+.nav-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: .5rem .65rem;
+    border-radius: .4rem;
+    transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+    color: #fff;
+    background-color: rgb(255 255 255 / 18%);
+    transform: translateY(-2px);
+}
+
+.nav-links a.active {
+    background-color: rgb(255 255 255 / 12%);
+}
+
+.nav-links .nav-cart {
+    margin-left: 1rem;
+}

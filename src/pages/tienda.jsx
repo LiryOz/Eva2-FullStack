@@ -2,10 +2,12 @@
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { obtenerProductos } from '../services/productos'
+import { agregarProductoAlCarrito } from '../services/carrito'
 
 const productos = obtenerProductos()
 
 function agregarAlCarrito(producto) {
+    agregarProductoAlCarrito(producto)
     window.alert(`${producto.nombre} se ha agregado al carrito.`)
 }
 
