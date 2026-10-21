@@ -7,7 +7,7 @@ const HeaderAdmin = () => {
       <div className="nav-inner">
         {/* Logo y nombre que llevan al inicio */}
         <NavLink className="site-brand fw-bold fs-4" to="/">
-          <img className="align-middle me-2" src="/Logo.png" alt="" width="32" height="32" />
+          <img className="align-middle me-2" src={`${import.meta.env.BASE_URL}Logo.png`} alt="" width="32" height="32" />
           Veterinaria Liry
         </NavLink>
 

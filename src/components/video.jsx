@@ -6,7 +6,7 @@ const Video = () => {
     <section className="video-banner mb-5">
       {/* Video que se reproduce solo, sin sonido y en bucle */}
       <video id="bg-video" autoPlay muted loop playsInline aria-hidden="true">
-        <source src="/videomichi2.mp4" type="video/mp4" />
+        <source src={`${import.meta.env.BASE_URL}videomichi2.mp4`} type="video/mp4" />
       </video>
 
       {/* Capa oscura encima del video para que el texto se lea mejor */}

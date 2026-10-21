@@ -22,7 +22,7 @@ localStorage.clear()
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* BrowserRouter permite cambiar de pagina sin recargar el navegador */}
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       {/* Cada Route une una direccion de la web con la pagina que se muestra */}
       <Routes>
         <Route path="/" element={<Inicio />} />

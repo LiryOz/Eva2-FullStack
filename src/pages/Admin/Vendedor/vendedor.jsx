@@ -72,7 +72,7 @@ const Vendedor = () => {
     // Usa el logo si no se escribio una imagen
     let rutaImagen = imagen
     if (rutaImagen === '') {
-      rutaImagen = '/Logo.png'
+      rutaImagen = `${import.meta.env.BASE_URL}Logo.png`
     }
 
     // Arma el producto con lo que se escribio en el formulario
