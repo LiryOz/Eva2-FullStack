@@ -1,3 +1,7 @@
+// nombre de la etiqueta con la que se guardan las citas en el localstorage
+// se escribe una sola vez aqui para no repetirlo en cada funcion
+const claveCitas = 'agendamientosLiry'
+
 // la lista guarda tres citas de ejemplo
 const horaAgendada = [
   {
@@ -29,46 +33,52 @@ const horaAgendada = [
   },
 ]
 
+// devuelve la lista de citas guardadas
 export const obtenerHorasAgendadas = () => {
-  // el servicio agrega los ejemplos una sola vez a la lista guardada
-  const datosGuardados = localStorage.getItem('agendamientosLiry')
-  const citasGuardadas = datosGuardados ? JSON.parse(datosGuardados) : []
+  // busca en el localstorage el texto guardado con la clave de las citas
+  let datosGuardados = localStorage.getItem(claveCitas)
 
-  if (localStorage.getItem('citasDummyAgregadas') === 'true') {
-    return citasGuardadas
+  // si no hay nada guardado guarda las citas de ejemplo como punto de partida
+  if (datosGuardados === null) {
+    localStorage.setItem(claveCitas, JSON.stringify(horaAgendada))
+    datosGuardados = localStorage.getItem(claveCitas)
   }
 
-  const citasNuevas = citasGuardadas.filter(
-    (cita) => !horaAgendada.some((ejemplo) => ejemplo.id === cita.id),
-  )
-  const todasLasCitas = [...horaAgendada, ...citasNuevas]
-
-  localStorage.setItem('agendamientosLiry', JSON.stringify(todasLasCitas))
-  localStorage.setItem('citasDummyAgregadas', 'true')
-
-  return todasLasCitas
+  // convierte el texto guardado de vuelta a una lista
+  return JSON.parse(datosGuardados)
 }
 
+// agrega una cita nueva al final de la lista
 export const guardarHoraAgendada = (nuevaCita) => {
-  // el servicio agrega la cita al final de la lista
+  // pide la lista actual de citas
   const citasGuardadas = obtenerHorasAgendadas()
-  // la nueva cita copia cada dato y recibe un id con la hora actual
-  const citaConId = {
-    nombreDueño: nuevaCita.nombreDueño,
-    nombrePaciente: nuevaCita.nombrePaciente,
-    especiePaciente: nuevaCita.especiePaciente,
-    fechaCita: nuevaCita.fechaCita,
-    motivo: nuevaCita.motivo,
-    creadaEn: nuevaCita.creadaEn,
-    id: Date.now(),
-  }
-  citasGuardadas.push(citaConId)
-  localStorage.setItem('agendamientosLiry', JSON.stringify(citasGuardadas))
+
+  // le da a la cita un id unico usando la hora actual
+  nuevaCita.id = Date.now()
+
+  // pone la cita al final de la lista
+  citasGuardadas.push(nuevaCita)
+
+  // guarda la lista completa como texto en el localstorage
+  localStorage.setItem(claveCitas, JSON.stringify(citasGuardadas))
 }
 
+// borra la cita que tiene ese id y devuelve las que quedan
 export const eliminarHoraAgendada = (id) => {
+  // pide la lista actual de citas
   const citasGuardadas = obtenerHorasAgendadas()
-  const citasActualizadas = citasGuardadas.filter((cita) => cita.id !== id)
-  localStorage.setItem('agendamientosLiry', JSON.stringify(citasActualizadas))
+
+  // arma una lista nueva con todas las citas menos la que se quiere borrar
+  const citasActualizadas = []
+  for (const cita of citasGuardadas) {
+    if (cita.id !== id) {
+      citasActualizadas.push(cita)
+    }
+  }
+
+  // guarda la lista nueva como texto en el localstorage
+  localStorage.setItem(claveCitas, JSON.stringify(citasActualizadas))
+
+  // devuelve la lista para que la tabla se actualice
   return citasActualizadas
 }

@@ -241,3 +241,20 @@ main {
 .nav-links .nav-cart {
     margin-left: 1rem;
 }
+
+/* Circulo rojo con la cantidad de productos del carrito */
+.cart-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    margin-left: .4rem;
+    padding: 0 .4rem;
+    border-radius: 999px;
+    background-color: #dc3545;
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 700;
+    line-height: 1;
+}

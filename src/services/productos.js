@@ -1,3 +1,7 @@
+// nombre de la etiqueta con la que se guardan los productos en el localstorage
+const claveProductos = 'productosLiry'
+
+// lista de productos con la que parte la tienda
 const productos = [
   {
     id: 1,
@@ -36,4 +40,23 @@ const productos = [
   },
 ]
 
-export const obtenerProductos = () => productos
+// devuelve la lista de productos guardada en el localstorage
+export const obtenerProductos = () => {
+  // busca en el localstorage el texto guardado con la clave de los productos
+  let datosGuardados = localStorage.getItem(claveProductos)
+
+  // si no hay nada guardado guarda los productos de arriba como punto de partida
+  if (datosGuardados === null) {
+    localStorage.setItem(claveProductos, JSON.stringify(productos))
+    datosGuardados = localStorage.getItem(claveProductos)
+  }
+
+  // convierte el texto guardado de vuelta a una lista
+  return JSON.parse(datosGuardados)
+}
+
+// guarda la lista de productos en el localstorage
+export const guardarProductos = (lista) => {
+  // convierte la lista a texto y la guarda con la clave de los productos
+  localStorage.setItem(claveProductos, JSON.stringify(lista))
+}

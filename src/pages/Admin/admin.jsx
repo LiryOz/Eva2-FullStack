@@ -3,15 +3,11 @@ import Footer from '../../components/footer'
 import { obtenerUsuarios } from '../../services/usuarios'
 import { obtenerHorasAgendadas } from '../../services/horaAgendada'
 
-// la funcion cuenta los usuarios registrados
-const contarUsuarios = () => obtenerUsuarios().length
-
-// la funcion cuenta las horas guardadas
-const contarHoras = () => obtenerHorasAgendadas().length
-
+// Muestra el panel principal del administrador con un resumen
 const Admin = () => {
-  const totalUsuarios = contarUsuarios()
-  const totalHoras = contarHoras()
+  // Cuenta cuantos usuarios y cuantas horas agendadas existen
+  const totalUsuarios = obtenerUsuarios().length
+  const totalHoras = obtenerHorasAgendadas().length
 
   return (
     <>
@@ -20,6 +16,7 @@ const Admin = () => {
         <h1 className="mb-4">Panel de administración</h1>
         <p className="text-muted">Resumen de usuarios y citas</p>
 
+        {/* Tabla con los totales */}
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>

@@ -8,23 +8,43 @@ import {
   vaciarCarrito,
 } from '../services/carrito'
 
+// Suma el precio por la cantidad de cada producto para obtener el total
+const calcularTotal = (productos) => {
+  let total = 0
+  for (const producto of productos) {
+    total = total + producto.precio * producto.cantidad
+  }
+  return total
+}
+
+// Muestra los productos del carrito y el formulario para comprar
 const Carrito = () => {
+  // Guarda los productos que se ven en la tabla
   const [productos, setProductos] = useState(obtenerCarrito())
+  // Guarda la opcion de entrega elegida envio o retiro
   const [tipoEntrega, setTipoEntrega] = useState('')
 
+  // Cambia cuantas unidades se llevan de un producto
   const actualizarCantidad = (id, cantidad) => {
-    if (cantidad < 1) return
+    // No permite cantidades menores a uno
+    if (cantidad < 1) {
+      return
+    }
     cambiarCantidadCarrito(id, cantidad)
     setProductos(obtenerCarrito())
   }
 
+  // Saca un producto del carrito
   const quitarProducto = (id) => {
     quitarProductoDelCarrito(id)
     setProductos(obtenerCarrito())
   }
 
+  // Termina la compra cuando se envia el formulario
   const finalizarCompra = (event) => {
+    // Evita que la pagina se recargue
     event.preventDefault()
+    // Vacia el carrito y limpia el formulario
     vaciarCarrito()
     setProductos([])
     event.currentTarget.reset()
@@ -32,10 +52,7 @@ const Carrito = () => {
     window.alert('Compra realizada con éxito')
   }
 
-  const total = productos.reduce(
-    (suma, producto) => suma + producto.precio * producto.cantidad,
-    0,
-  )
+  const total = calcularTotal(productos)
 
   return (
     <>
@@ -43,10 +60,12 @@ const Carrito = () => {
       <main className="container py-5">
         <h1 className="mb-4">Mi carrito</h1>
 
+        {/* Si no hay productos muestra un mensaje, si hay muestra la tabla y el formulario */}
         {productos.length === 0 ? (
           <p className="text-muted">El carrito está vacío</p>
         ) : (
           <>
+            {/* Tabla con los productos del carrito */}
             <div className="table-responsive mb-4">
               <table className="table table-striped align-middle">
                 <thead>
@@ -59,6 +78,7 @@ const Carrito = () => {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* Crea una fila por cada producto */}
                   {productos.map((producto) => (
                     <tr key={producto.id}>
                       <td>
@@ -74,18 +94,18 @@ const Carrito = () => {
                       </td>
                       <td>${producto.precio.toLocaleString('es-CL')}</td>
                       <td>
+                        {/* Campo para cambiar la cantidad */}
                         <input
                           className="form-control"
                           type="number"
                           min="1"
                           value={producto.cantidad}
                           aria-label={`Cantidad de ${producto.nombre}`}
-                          onChange={(event) =>
-                            actualizarCantidad(producto.id, Number(event.target.value))
-                          }
+                          onChange={(event) => actualizarCantidad(producto.id, Number(event.target.value))}
                           style={{ maxWidth: '90px' }}
                         />
                       </td>
+                      {/* Subtotal es el precio por la cantidad */}
                       <td>${(producto.precio * producto.cantidad).toLocaleString('es-CL')}</td>
                       <td>
                         <button
@@ -108,6 +128,7 @@ const Carrito = () => {
               </table>
             </div>
 
+            {/* Formulario con los datos del cliente */}
             <section className="card border-0 shadow-sm">
               <div className="card-body p-4">
                 <h2 className="h4 mb-3">Datos para la compra</h2>
@@ -140,12 +161,15 @@ const Carrito = () => {
                         <option value="retiro">Retiro en tienda</option>
                       </select>
                     </div>
+
+                    {/* El campo de direccion solo aparece si se elige envio */}
                     {tipoEntrega === 'envio' && (
                       <div className="col-12">
                         <label className="form-label" htmlFor="direccion">Dirección de envío</label>
                         <input className="form-control" id="direccion" name="direccion" required />
                       </div>
                     )}
+
                     <div className="col-md-6">
                       <label className="form-label" htmlFor="metodoPago">Método de pago</label>
                       <select className="form-select" id="metodoPago" name="pago" defaultValue="" required>

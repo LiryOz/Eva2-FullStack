@@ -1,20 +1,18 @@
-
 import { useState } from 'react'
 import HeaderAdmin from '../../components/headerAdmin'
 import Footer from '../../components/footer'
 import { eliminarHoraAgendada, obtenerHorasAgendadas } from '../../services/horaAgendada'
 
-const mostrarPopupEliminada = () => {
-  window.alert('agenda eliminada')
-}
-
+// Muestra la lista de citas para que el administrador pueda eliminarlas
 const GestionarCitas = () => {
+  // Guarda las citas que se ven en la tabla
   const [citas, setCitas] = useState(obtenerHorasAgendadas())
 
-  // la funcion elimina la cita que tiene ese id
+  // Elimina la cita con ese id y actualiza la tabla
   const eliminarCita = (id) => {
-    setCitas(eliminarHoraAgendada(id))
-    mostrarPopupEliminada()
+    const citasRestantes = eliminarHoraAgendada(id)
+    setCitas(citasRestantes)
+    window.alert('agenda eliminada')
   }
 
   return (
@@ -23,6 +21,7 @@ const GestionarCitas = () => {
       <main className="container py-5">
         <h1 className="mb-4">Gestionar citas</h1>
 
+        {/* Si no hay citas muestra un mensaje, si hay muestra la tabla */}
         {citas.length === 0 ? (
           <p className="text-muted">No hay citas agendadas</p>
         ) : (
@@ -39,6 +38,7 @@ const GestionarCitas = () => {
                 </tr>
               </thead>
               <tbody>
+                {/* Crea una fila por cada cita */}
                 {citas.map((cita) => (
                   <tr key={cita.id}>
                     <td>{cita.fechaCita}</td>

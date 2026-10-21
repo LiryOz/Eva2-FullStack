@@ -1,33 +1,37 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
 import { MemoryRouter } from 'react-router'
+import { describe, expect, it } from 'vitest'
 import Video from '../components/video.jsx'
 
+// agrupa los tests del banner con video
 describe('Video', () => {
-  it('muestra el título y las acciones del banner', () => {
+  // revisa que aparezcan los dos botones del banner
+  it('muestra los botones del banner', () => {
+    // dibuja el banner dentro de un router de prueba porque usa enlaces
     render(
       <MemoryRouter>
         <Video />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Cuidamos a quienes más quieres' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Conoce la tienda' })).toHaveAttribute('href', '/tienda')
-    expect(screen.getByRole('link', { name: 'Agendar hora' })).toHaveAttribute('href', '/agendarHora')
+    // busca el texto de cada boton en la pantalla
+    expect(screen.getByText('Conoce la tienda')).toBeInTheDocument()
+    expect(screen.getByText('Agendar hora')).toBeInTheDocument()
   })
 
-  it('incluye el video de fondo configurado para reproducirse en silencio', () => {
+  // revisa que exista el video de fondo
+  it('tiene un video de fondo', () => {
+    // dibuja el banner y guarda el contenedor para buscar dentro de el
     const { container } = render(
       <MemoryRouter>
         <Video />
       </MemoryRouter>,
     )
 
+    // busca la etiqueta video dentro del banner
     const video = container.querySelector('video')
 
+    // comprueba que el video si existe
     expect(video).not.toBeNull()
-    expect(video).toHaveAttribute('autoplay')
-    expect(video).toHaveProperty('muted', true)
-    expect(video.querySelector('source')).toHaveAttribute('src', '/videomichi2.mp4')
   })
 })

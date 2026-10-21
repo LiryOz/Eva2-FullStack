@@ -1,85 +1,89 @@
-
-import Header from '../components/header'
-import Footer from '../components/footer'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import Header from '../components/header'
+import Footer from '../components/footer'
 
+// Muestra el formulario para entrar como administrador o vendedor
 const IniciarSesion = () => {
-  // Permite cambiar de página sin recargar toda la aplicación.
+  // Permite cambiar de pagina desde el codigo
   const navigate = useNavigate()
+  // Indica si se muestra el mensaje de datos incorrectos
+  const [mostrarError, setMostrarError] = useState(false)
 
-  // Guarda si se deben mostrar las credenciales incorrectas
-  const [loginError, setLoginError] = useState(false)
-
-  // Se ejecuta cuando el usuario envía el formulario de inicio de sesión
-  const handleSubmit = (event) => {
-    // Evita que el navegador recargue la página al enviar el formulario
+  // Revisa el correo y la contraseña cuando se envia el formulario
+  const revisarDatos = (event) => {
+    // Evita que la pagina se recargue
     event.preventDefault()
 
-    // Obtiene los valores escritos en los campos identificados por sus atributos name
-    const formData = new FormData(event.currentTarget)
+    // Lee lo que se escribio en cada campo usando su atributo name
+    const datos = new FormData(event.currentTarget)
+    // Quita espacios y pasa el correo a minusculas para compararlo mejor
+    const correo = datos.get('email').trim().toLowerCase()
+    const contrasena = datos.get('password')
 
-    // Normaliza el correo para que espacios y mayúsculas no afecten la comparación
-    const email = formData.get('email')?.toString().trim().toLowerCase()
-    const password = formData.get('password')
-
-    // Comprueba la contraseña de prueba antes de permitir el acceso a cualquier perfil
-    if (password !== '1234') {
-      setLoginError(true)
-      return
-    }
-
-    // Si las credenciales corresponden al administrador, abre su panel.
-    if (email === 'admin@tienda.cl') {
+    // Solo existen dos cuentas de prueba y las dos usan la contraseña 1234
+    if (correo === 'admin@liry.cl' && contrasena === '1234') {
+      // El administrador va a su panel
       navigate('/admin')
-      return
-    }
-
-    // Si corresponden al vendedor, abre el panel de vendedor.
-    if (email === 'vendedor@tienda.cl') {
+    } else if (correo === 'vendedor1@liry.cl' && contrasena === '1234') {
+      // El vendedor va a su pagina de productos
       navigate('/vendedor')
-      return
+    } else {
+      // Cualquier otro dato muestra el mensaje de error
+      setMostrarError(true)
     }
-
-    // Muestra el error cuando el correo no pertenece a ninguno de los usuarios de prueba.
-    setLoginError(true)
   }
 
   return (
     <>
       <Header />
       <main>
-        {/* ===== FORMULARIO DE LOGIN ===== */}
-        {/* Esta sección contiene los campos que permiten iniciar sesión en el sistema. */}
         <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
           <div className="card bg-secondary p-4" style={{ width: '100%', maxWidth: '400px' }}>
             <h2 className="text-center mb-4">Iniciar Sesión</h2>
 
-            {/* Credenciales de prueba (mock) */}
-            {/* Estos datos sirven para probar los roles de administrador y vendedor. */}
+            {/* Lista de correos de prueba para poder entrar */}
             <div className="alert alert-secondary text-dark small">
               <strong>Usuarios de prueba:</strong><br />
-              admin@tienda.cl / 1234<br />
-              vendedor@tienda.cl / 1234
+              admin@liry.cl / 1234<br />
+              vendedor1@liry.cl / 1234
             </div>
 
-            {/* FORMULARIO */}
-            {/* El formulario recopila el correo y la contraseña del usuario. */}
-            <form id="loginForm" onSubmit={handleSubmit}>
+            {/* Formulario de correo y contraseña */}
+            <form onSubmit={revisarDatos}>
               <div className="mb-3">
                 <label htmlFor="input-email" className="form-label">Correo electrónico</label>
-                <input type="email" className="form-control" id="input-email" name="email" placeholder="ejemplo@tienda.cl" required />
+                <input
+                  type="email"
+                  className="form-control"
+                  id="input-email"
+                  name="email"
+                  placeholder="ejemplo@tienda.cl"
+                  required
+                  onChange={() => setMostrarError(false)}
+                />
               </div>
               <div className="mb-3">
                 <label htmlFor="input-password" className="form-label">Contraseña</label>
-                <input type="password" className="form-control" id="input-password" name="password" placeholder="****" required />
+                <input
+                  type="password"
+                  className="form-control"
+                  id="input-password"
+                  name="password"
+                  placeholder="****"
+                  required
+                  onChange={() => setMostrarError(false)}
+                />
               </div>
-              <button type="submit" id="btn-inicio-sesion" className="btn btn-primary w-100">Ingresar</button>
+              <button type="submit" className="btn btn-primary w-100">Ingresar</button>
             </form>
 
-            {loginError && <div id="loginError" className="text-danger mt-3 text-center" role="alert">
-              ❌ Credenciales incorrectas. Intenta nuevamente.
-            </div>}
+            {/* Mensaje de error que solo aparece si los datos estan mal */}
+            {mostrarError && (
+              <div className="text-danger mt-3 text-center" role="alert">
+                ❌ Credenciales incorrectas. Intenta nuevamente.
+              </div>
+            )}
           </div>
         </div>
       </main>
