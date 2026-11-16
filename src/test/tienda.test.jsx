@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { obtenerCarrito } from '../services/carrito'
-import { obtenerProductos } from '../services/productos'
+import { guardarProductos, obtenerProductos } from '../services/productos'
 import Tienda from '../pages/tienda'
 
 // agrupa los tests de la pagina tienda
@@ -12,6 +12,10 @@ describe('Tienda', () => {
   beforeEach(() => {
     // vacia el localstorage para que el carrito parta sin productos
     localStorage.clear()
+    // guarda un producto de prueba porque los productos reales vienen del backend
+    guardarProductos([
+      { id: 1, nombre: 'Producto de prueba', descripcion: 'Solo para el test', precio: 1000, imagen: '/Logo.png' },
+    ])
     // cambia el alert por una funcion falsa para que no aparezca la ventana
     window.alert = vi.fn()
   })

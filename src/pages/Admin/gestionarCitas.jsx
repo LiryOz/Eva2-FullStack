@@ -1,16 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import HeaderAdmin from '../../components/headerAdmin'
 import Footer from '../../components/footer'
-import { eliminarHoraAgendada, obtenerHorasAgendadas } from '../../services/horaAgendada'
+import { obtenerHorasAgendadas } from '../../services/horaAgendada'
 
 // Muestra la lista de citas para que el administrador pueda eliminarlas
 const GestionarCitas = () => {
   // Guarda las citas que se ven en la tabla
-  const [citas, setCitas] = useState(obtenerHorasAgendadas())
+  const [citas, setCitas] = useState([])
 
-  // Elimina la cita con ese id y actualiza la tabla
+  // pide las citas al backend una vez cuando se abre la pagina
+  useEffect(() => {
+    obtenerHorasAgendadas()
+      .then((lista) => setCitas(lista))
+      .catch(() => window.alert('No se pudieron cargar las citas'))
+  }, [])
+
+  // Quita la cita con ese id de la tabla
+  // el backend todavia no tiene ruta para borrar, por eso solo se quita de la pantalla
   const eliminarCita = (id) => {
-    const citasRestantes = eliminarHoraAgendada(id)
+    const citasRestantes = []
+    for (const cita of citas) {
+      if (cita.id !== id) {
+        citasRestantes.push(cita)
+      }
+    }
     setCitas(citasRestantes)
     window.alert('agenda eliminada')
   }

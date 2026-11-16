@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { guardarSesion, iniciarSesion, obtenerUsuarioActual, usarTokenUI } from '../services/api'
 
 // Muestra el formulario para entrar como administrador o vendedor
 const IniciarSesion = () => {
@@ -10,8 +11,16 @@ const IniciarSesion = () => {
   // Indica si se muestra el mensaje de datos incorrectos
   const [mostrarError, setMostrarError] = useState(false)
 
+  // si alguien tenia la sesion abierta y vuelve al login se cierra su sesion
+  // y se vuelve a usar el token de la ui
+  useEffect(() => {
+    if (obtenerUsuarioActual() !== null) {
+      usarTokenUI().catch(() => {})
+    }
+  }, [])
+
   // Revisa el correo y la contraseña cuando se envia el formulario
-  const revisarDatos = (event) => {
+  const revisarDatos = async (event) => {
     // Evita que la pagina se recargue
     event.preventDefault()
 
@@ -21,15 +30,24 @@ const IniciarSesion = () => {
     const correo = datos.get('email').trim().toLowerCase()
     const contrasena = datos.get('password')
 
-    // Solo existen dos cuentas de prueba y las dos usan la contraseña 1234
-    if (correo === 'admin@liry.cl' && contrasena === '1234') {
-      // El administrador va a su panel
-      navigate('/admin')
-    } else if (correo === 'vendedor1@liry.cl' && contrasena === '1234') {
-      // El vendedor va a su pagina de productos
-      navigate('/vendedor')
-    } else {
-      // Cualquier otro dato muestra el mensaje de error
+    try {
+      // le pregunta al backend si el correo y la contraseña son correctos
+      const usuario = await iniciarSesion(correo, contrasena)
+
+      if (usuario.rol === 'admin') {
+        // guarda el token del admin y lo manda a su panel
+        guardarSesion(usuario)
+        navigate('/admin')
+      } else if (usuario.rol === 'vendedor') {
+        // guarda el token del vendedor y lo manda a su pagina de productos
+        guardarSesion(usuario)
+        navigate('/vendedor')
+      } else {
+        // la cuenta de la ui u otro rol no pueden entrar
+        setMostrarError(true)
+      }
+    } catch {
+      // si el backend responde con error los datos estan mal
       setMostrarError(true)
     }
   }
@@ -42,11 +60,11 @@ const IniciarSesion = () => {
           <div className="card bg-secondary p-4" style={{ width: '100%', maxWidth: '400px' }}>
             <h2 className="text-center mb-4">Iniciar Sesión</h2>
 
-            {/* Lista de correos de prueba para poder entrar */}
-            <div className="alert alert-secondary text-dark small">
+            {/* cuentas de ejemplo que existen en el backend para poder probar */}
+            <div className="alert alert-light text-dark small">
               <strong>Usuarios de prueba:</strong><br />
-              admin@liry.cl / 1234<br />
-              vendedor1@liry.cl / 1234
+              Admin: admin@liry.cl / H0clFnDwxx31Q35VhXbq<br />
+              Vendedor: vendedor1@liry.cl / mxXKNfKpHLHf6He5T1EF
             </div>
 
             {/* Formulario de correo y contraseña */}
@@ -80,7 +98,7 @@ const IniciarSesion = () => {
 
             {/* Mensaje de error que solo aparece si los datos estan mal */}
             {mostrarError && (
-              <div className="text-danger mt-3 text-center" role="alert">
+              <div className="alert alert-danger bg-white text-danger fw-semibold mt-3 mb-0 text-center" role="alert">
                 ❌ Credenciales incorrectas. Intenta nuevamente.
               </div>
             )}
