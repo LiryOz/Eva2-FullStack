@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { agregarProductoAlCarrito, obtenerCarrito } from '../services/carrito'
-import { obtenerProductos } from '../services/productos'
+import { guardarProductos, obtenerProductos } from '../services/productos'
 import Carrito from '../pages/carrito'
 
 // agrupa los tests de la pagina carrito
@@ -11,6 +11,10 @@ describe('Carrito', () => {
   // vacia el localstorage antes de cada test para que el carrito parta vacio
   beforeEach(() => {
     localStorage.clear()
+    // guarda un producto de prueba porque los productos reales vienen del backend
+    guardarProductos([
+      { id: 1, nombre: 'Producto de prueba', descripcion: 'Solo para el test', precio: 1000, imagen: '/Logo.png' },
+    ])
   })
 
   // revisa el mensaje cuando no hay productos

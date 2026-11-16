@@ -1,8 +1,4 @@
-const usuarios = [
-  { id: 1, nombre: 'Admin Principal', correo: 'admin@liry.cl', rol: 'admin', estado: 'Activo' },
-  { id: 2, nombre: 'Elva Lazo', correo: 'vendedor1@liry.cl', rol: 'vendedor', estado: 'Activo' },
-  { id: 3, nombre: 'Liry La Brijida', correo: 'vendedor2@liry.cl', rol: 'vendedor', estado: 'Inactivo' },
-  { id: 4, nombre: 'Aquiles Bailo', correo: 'admin2@liry.cl', rol: 'admin', estado: 'Activo' },
-]
+import { obtenerConToken } from './api'
 
-export const obtenerUsuarios = () => usuarios
+// pide al backend la lista de usuarios usando el token guardado
+export const obtenerUsuarios = () => obtenerConToken('/api/v1/usuarios')

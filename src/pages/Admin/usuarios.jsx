@@ -1,9 +1,7 @@
+import { useEffect, useState } from 'react'
 import HeaderAdmin from '../../components/headerAdmin'
 import Footer from '../../components/footer'
 import { obtenerUsuarios } from '../../services/usuarios'
-
-// Trae la lista de usuarios de ejemplo
-const usuarios = obtenerUsuarios()
 
 // Devuelve el nombre del rol que se muestra en la tabla
 const nombreDelRol = (rol) => {
@@ -41,6 +39,16 @@ const eliminarUsuario = () => {
 
 // Muestra la tabla de usuarios para el administrador
 const Usuarios = () => {
+  // guarda la lista de usuarios que llega del backend
+  const [usuarios, setUsuarios] = useState([])
+
+  // pide los usuarios al backend una vez cuando se abre la pagina
+  useEffect(() => {
+    obtenerUsuarios()
+      .then((lista) => setUsuarios(lista))
+      .catch(() => window.alert('No se pudieron cargar los usuarios'))
+  }, [])
+
   return (
     <>
       <HeaderAdmin />

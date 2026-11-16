@@ -18,7 +18,7 @@ const AgendarHora = () => {
   const fechaMinima = obtenerFechaDeHoy()
 
   // Guarda la cita cuando se envia el formulario
-  const guardarHora = (event) => {
+  const guardarHora = async (event) => {
     // Evita que la pagina se recargue
     event.preventDefault()
 
@@ -42,20 +42,26 @@ const AgendarHora = () => {
       motivo = 'Sin motivo especificado'
     }
 
-    // Arma la cita con todos sus datos
+    // Arma la cita con los datos que pide el backend
+    // el id y la fecha de creacion los pone el backend
     const nuevaCita = {
       nombreDueño: nombreDueño,
       nombrePaciente: nombrePaciente,
       especiePaciente: especiePaciente,
       fechaCita: fechaCita,
       motivo: motivo,
-      creadaEn: new Date().toISOString(),
     }
 
-    // Guarda la cita, avisa que salio bien y deja el formulario en blanco
-    guardarHoraAgendada(nuevaCita)
-    window.alert('La hora se ha guardado con éxito.')
-    formulario.reset()
+    try {
+      // manda la cita al backend con un post
+      await guardarHoraAgendada(nuevaCita)
+      // avisa que salio bien y deja el formulario en blanco
+      window.alert('La hora se ha guardado con éxito.')
+      formulario.reset()
+    } catch {
+      // si el backend responde con error se avisa y no se borra el formulario
+      window.alert('No se pudo guardar la hora, intenta nuevamente.')
+    }
   }
 
   return (
